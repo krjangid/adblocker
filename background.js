@@ -1,12 +1,36 @@
+// Enable automatic badge text for declarativeNetRequest
+chrome.declarativeNetRequest.setExtensionActionOptions({ displayActionCountAsBadgeText: true });
+
 chrome.runtime.onInstalled.addListener(() => {
   // Set default state to enabled
-  chrome.storage.local.get(['adblockEnabled'], (result) => {
-    if (result.adblockEnabled === undefined) {
-      chrome.storage.local.set({ adblockEnabled: true });
+  chrome.storage.local.get(['adblockEnabled', 'totalAdsBlocked', 'totalDataSaved'], (result) => {
+    const updates = {};
+    if (result.adblockEnabled === undefined) updates.adblockEnabled = true;
+    if (result.totalAdsBlocked === undefined) updates.totalAdsBlocked = 0;
+    if (result.totalDataSaved === undefined) updates.totalDataSaved = 0;
+    if (Object.keys(updates).length > 0) {
+      chrome.storage.local.set(updates);
     }
   });
 });
 
+// Track blocked requests to update total analytics
+chrome.webRequest.onErrorOccurred.addListener(
+  (details) => {
+    if (details.error === "net::ERR_BLOCKED_BY_CLIENT") {
+      chrome.storage.local.get(['totalAdsBlocked', 'totalDataSaved'], (result) => {
+        const newBlocked = (result.totalAdsBlocked || 0) + 1;
+        // Estimate 50KB per blocked ad request
+        const newData = (result.totalDataSaved || 0) + 50; 
+        chrome.storage.local.set({
+          totalAdsBlocked: newBlocked,
+          totalDataSaved: newData
+        });
+      });
+    }
+  },
+  { urls: ["<all_urls>"] }
+);
 chrome.storage.onChanged.addListener((changes, namespace) => {
   if (namespace === 'local' && changes.adblockEnabled) {
     const isEnabled = changes.adblockEnabled.newValue;

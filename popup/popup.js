@@ -31,4 +31,31 @@ document.addEventListener('DOMContentLoaded', () => {
       statusCard.classList.remove('active');
     }
   }
+
+  // Analytics Dashboard
+  const pageBlockedEl = document.getElementById('page-blocked');
+  const totalBlockedEl = document.getElementById('total-blocked');
+  const dataSavedEl = document.getElementById('data-saved');
+
+  // Load total stats
+  chrome.storage.local.get(['totalAdsBlocked', 'totalDataSaved'], (result) => {
+    totalBlockedEl.textContent = (result.totalAdsBlocked || 0).toLocaleString();
+    // Convert KB to MB
+    const mbSaved = ((result.totalDataSaved || 0) / 1024).toFixed(2);
+    dataSavedEl.textContent = mbSaved + ' MB';
+  });
+
+  // Get current tab blocked count
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs[0] && tabs[0].id) {
+      chrome.action.getBadgeText({ tabId: tabs[0].id }, (text) => {
+        // If badge text is 'ON' or 'OFF', it means no ads blocked on this specific page via declarativeNetRequest yet
+        if (text === 'ON' || text === 'OFF' || !text) {
+          pageBlockedEl.textContent = '0';
+        } else {
+          pageBlockedEl.textContent = text;
+        }
+      });
+    }
+  });
 });
