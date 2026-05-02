@@ -1,12 +1,13 @@
 :root {
-  --bg-color: #121212;
-  --card-bg: #1e1e1e;
+  --bg-color: #160a10;
+  --card-bg: rgba(255, 255, 255, 0.04);
+  --card-border: rgba(255, 255, 255, 0.08);
   --text-primary: #ffffff;
-  --text-secondary: #a0a0a0;
-  --accent-color: #6200ea;
-  --success-color: #00c853;
-  --danger-color: #d50000;
-  --border-radius: 12px;
+  --text-secondary: #e2c0b6;
+  --accent-color: #ff3366;
+  --success-color: #ff6b35;
+  --danger-color: #ff1a1a;
+  --border-radius: 16px;
 }
 
 body {
@@ -15,6 +16,8 @@ body {
   padding: 0;
   width: 320px;
   background-color: var(--bg-color);
+  background-image: radial-gradient(circle at top left, rgba(255, 51, 102, 0.2), transparent 250px),
+                    radial-gradient(circle at bottom right, rgba(255, 107, 53, 0.2), transparent 250px);
   color: var(--text-primary);
 }
 
@@ -40,29 +43,37 @@ body {
 }
 
 h1 {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   margin: 0;
-  background: linear-gradient(90deg, #bb86fc, #6200ea);
+  background: linear-gradient(135deg, #ff9a44, #ff3366);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: transparent;
+  letter-spacing: -0.5px;
 }
 
 .status-card {
   background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: var(--border-radius);
   padding: 20px;
   text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
 }
 
 .status-card.active {
-  border-bottom: 4px solid var(--success-color);
+  border-bottom: 3px solid var(--success-color);
+  box-shadow: 0 8px 32px rgba(16, 185, 129, 0.1);
 }
 
 .status-card.inactive {
-  border-bottom: 4px solid var(--danger-color);
+  border-bottom: 3px solid var(--danger-color);
+  box-shadow: 0 8px 32px rgba(239, 68, 68, 0.1);
 }
 
 .status-card h2 {
@@ -81,8 +92,12 @@ h1 {
   align-items: center;
   justify-content: space-between;
   background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: 16px;
   border-radius: var(--border-radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .toggle-label {
@@ -128,10 +143,11 @@ h1 {
 
 input:checked + .slider {
   background-color: var(--success-color);
+  box-shadow: 0 0 12px rgba(255, 107, 53, 0.5);
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px var(--success-color);
+  box-shadow: 0 0 12px rgba(255, 107, 53, 0.7);
 }
 
 input:checked + .slider:before {
@@ -156,11 +172,15 @@ input:checked + .slider:before {
 /* Dashboard Styles */
 .dashboard {
   background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: var(--border-radius);
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .stat-row {

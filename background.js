@@ -1,6 +1,4 @@
-// Enable automatic badge text for declarativeNetRequest
-chrome.declarativeNetRequest.setExtensionActionOptions({ displayActionCountAsBadgeText: true });
-
+// Background script initialized
 chrome.runtime.onInstalled.addListener(() => {
   // Set default state to enabled
   chrome.storage.local.get(['adblockEnabled', 'totalAdsBlocked', 'totalDataSaved'], (result) => {
@@ -15,22 +13,19 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 // Track blocked requests to update total analytics
-chrome.webRequest.onErrorOccurred.addListener(
-  (details) => {
-    if (details.error === "net::ERR_BLOCKED_BY_CLIENT") {
-      chrome.storage.local.get(['totalAdsBlocked', 'totalDataSaved'], (result) => {
-        const newBlocked = (result.totalAdsBlocked || 0) + 1;
-        // Estimate 50KB per blocked ad request
-        const newData = (result.totalDataSaved || 0) + 50; 
-        chrome.storage.local.set({
-          totalAdsBlocked: newBlocked,
-          totalDataSaved: newData
-        });
+if (chrome.declarativeNetRequest.onRuleMatchedDebug) {
+  chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((info) => {
+    chrome.storage.local.get(['totalAdsBlocked', 'totalDataSaved'], (result) => {
+      const newBlocked = (result.totalAdsBlocked || 0) + 1;
+      // Estimate 50KB per blocked ad request
+      const newData = (result.totalDataSaved || 0) + 50; 
+      chrome.storage.local.set({
+        totalAdsBlocked: newBlocked,
+        totalDataSaved: newData
       });
-    }
-  },
-  { urls: ["<all_urls>"] }
-);
+    });
+  });
+}
 chrome.storage.onChanged.addListener((changes, namespace) => {
   if (namespace === 'local' && changes.adblockEnabled) {
     const isEnabled = changes.adblockEnabled.newValue;
@@ -44,15 +39,17 @@ function updateRulesetStatus(isEnabled) {
       enableRulesetIds: ['ruleset_1'],
       disableRulesetIds: []
     });
-    chrome.action.setBadgeText({ text: 'ON' });
-    chrome.action.setBadgeBackgroundColor({ color: '#4CAF50' });
+    chrome.action.setBadgeText({ text: '' }); // Clear manual text
+    chrome.declarativeNetRequest.setExtensionActionOptions({ displayActionCountAsBadgeText: true });
+    chrome.action.setBadgeBackgroundColor({ color: '#ff6b35' }); // Sunset Glow orange
   } else {
     chrome.declarativeNetRequest.updateEnabledRulesets({
       enableRulesetIds: [],
       disableRulesetIds: ['ruleset_1']
     });
+    chrome.declarativeNetRequest.setExtensionActionOptions({ displayActionCountAsBadgeText: false });
     chrome.action.setBadgeText({ text: 'OFF' });
-    chrome.action.setBadgeBackgroundColor({ color: '#F44336' });
+    chrome.action.setBadgeBackgroundColor({ color: '#ff1a1a' }); // Sunset Glow red
   }
 }
 
