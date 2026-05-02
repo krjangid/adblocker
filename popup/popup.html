@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Blockium</title>
+  <link rel="stylesheet" href="popup.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="../icons/icon48.png" alt="Logo" class="logo" id="logo-img">
+      <h1>Blockium</h1>
+    </div>
+    
+    <div class="status-card">
+      <h2 id="status-text">AdBlocker is ON</h2>
+      <p id="status-subtext">Blocking ads on this page</p>
+    </div>
+
+    <div class="toggle-container">
+      <label class="switch">
+        <input type="checkbox" id="power-switch" checked>
+        <span class="slider round"></span>
+      </label>
+      <span class="toggle-label">Enable Protection</span>
+    </div>
+
+    <div class="footer">
+      <p>Powered by Manifest V3</p>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

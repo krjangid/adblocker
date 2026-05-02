@@ -1,0 +1,24 @@
+/* AntiGravity AdBlocker Cosmetic Filtering */
+
+.ad-container,
+.ad-banner,
+.ad-wrapper,
+.advertisement,
+.adsbygoogle,
+[id^="div-gpt-ad-"],
+[id^="google_ads_iframe_"],
+.sponsored-post,
+.native-ad,
+.banner-ad,
+/* Specific Hotstar potential ad containers */
+.hs-ad-container,
+.shimmer-ad {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    z-index: -1 !important;
+}
