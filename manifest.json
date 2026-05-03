@@ -26,6 +26,11 @@
       "matches": ["*://*.youtube.com/*", "*://youtube.com/*"],
       "js": ["youtube.js"],
       "run_at": "document_end"
+    },
+    {
+      "matches": ["*://*.amazon.com/*", "*://*.primevideo.com/*", "*://*.amazon.co.uk/*", "*://*.amazon.in/*"],
+      "js": ["prime.js"],
+      "run_at": "document_end"
     }
   ],
   "action": {
