@@ -21,6 +21,11 @@
       "matches": ["<all_urls>"],
       "js": ["content.js"],
       "run_at": "document_start"
+    },
+    {
+      "matches": ["*://*.youtube.com/*", "*://youtube.com/*"],
+      "js": ["youtube.js"],
+      "run_at": "document_end"
     }
   ],
   "action": {
