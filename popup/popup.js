@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const powerSwitch = document.getElementById('power-switch');
+  const statusDot = document.getElementById('status-dot');
   const statusText = document.getElementById('status-text');
-  const statusSubtext = document.getElementById('status-subtext');
-  const statusCard = document.querySelector('.status-card');
 
   // Load initial state
   chrome.storage.local.get(['adblockEnabled'], (result) => {
@@ -20,15 +19,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateUI(isEnabled) {
     if (isEnabled) {
-      statusText.textContent = 'AdBlocker is ON';
-      statusSubtext.textContent = 'Blocking ads on this page';
-      statusCard.classList.add('active');
-      statusCard.classList.remove('inactive');
+      statusText.textContent = 'ACTIVE';
+      statusText.style.color = 'var(--text-dark)';
+      statusDot.classList.remove('off');
     } else {
-      statusText.textContent = 'AdBlocker is OFF';
-      statusSubtext.textContent = 'Ads are allowed';
-      statusCard.classList.add('inactive');
-      statusCard.classList.remove('active');
+      statusText.textContent = 'DISABLED';
+      statusText.style.color = 'var(--text-light)';
+      statusDot.classList.add('off');
     }
   }
 

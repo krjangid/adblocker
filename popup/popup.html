@@ -4,45 +4,54 @@
   <meta charset="UTF-8">
   <title>Blockium</title>
   <link rel="stylesheet" href="popup.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
+  <div class="container neumorphic">
     <div class="header">
-      <img src="../icons/icon48.png" alt="Logo" class="logo" id="logo-img">
-      <h1>Blockium</h1>
+      <div class="logo-container neumorphic-out">
+        <img src="../icons/icon48.png" alt="Logo" class="logo" id="logo-img">
+      </div>
+      <div class="header-text">
+        <h1>Blockium <span class="status-dot" id="status-dot"></span></h1>
+      </div>
     </div>
     
-    <div class="status-card">
-      <h2 id="status-text">AdBlocker is ON</h2>
-      <p id="status-subtext">Blocking ads on this page</p>
+    <div class="protection-card neumorphic-out">
+      <div class="protection-info">
+        <h2>PROTECTION:</h2>
+        <h3 id="status-text">ACTIVE</h3>
+      </div>
+      <div class="toggle-container">
+        <label class="switch">
+          <input type="checkbox" id="power-switch" checked>
+          <span class="slider round neumorphic-in"></span>
+        </label>
+      </div>
     </div>
 
-    <div class="toggle-container">
-      <label class="switch">
-        <input type="checkbox" id="power-switch" checked>
-        <span class="slider round"></span>
-      </label>
-      <span class="toggle-label">Enable Protection</span>
-    </div>
-
-    <div class="dashboard">
-      <div class="stat-row">
-        <span class="stat-label">Blocked on this page</span>
+    <h4 class="dashboard-title">Analytics Dashboard</h4>
+    <div class="dashboard-grid">
+      <div class="stat-card neumorphic-out">
+        <div class="icon-wrapper blue neumorphic-in"><span class="icon">🚫</span></div>
+        <span class="stat-label">Ads Blocked Today</span>
         <span id="page-blocked" class="stat-value">0</span>
+        <span class="stat-sub">Current page</span>
       </div>
-      <div class="stat-row">
-        <span class="stat-label">Total blocked</span>
+      
+      <div class="stat-card neumorphic-out">
+        <div class="icon-wrapper orange neumorphic-in"><span class="icon">🛡️</span></div>
+        <span class="stat-label">Trackers Prevented</span>
         <span id="total-blocked" class="stat-value">0</span>
+        <span class="stat-sub">Total blocked</span>
       </div>
-      <div class="stat-row">
-        <span class="stat-label">Data saved</span>
-        <span id="data-saved" class="stat-value">0 MB</span>
-      </div>
-    </div>
 
-    <div class="footer">
-      <p>Powered by Manifest V3</p>
+      <div class="stat-card neumorphic-out">
+        <div class="icon-wrapper green neumorphic-in"><span class="icon">☁️</span></div>
+        <span class="stat-label">Bandwidth Saved</span>
+        <span id="data-saved" class="stat-value">0 MB</span>
+        <span class="stat-sub">Usage saved</span>
+      </div>
     </div>
   </div>
   <script src="popup.js"></script>

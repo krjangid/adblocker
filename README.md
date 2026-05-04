@@ -1,27 +1,41 @@
 # Blockium Adblocker
 
-A lightweight, highly performant adblocker built with Manifest V3. Blockium features a beautiful glassmorphism UI, a real-time analytics dashboard, and powerful network-level ad blocking capabilities.
+<p align="center">
+  <img src="assets/logo.png" width="150" alt="Blockium Logo">
+</p>
 
-## How to Install in Chrome (Developer Mode)
+Blockium is a modern, lightning-fast Chrome extension built on **Manifest V3**. It provides robust network-level ad blocking, cosmetic filtering, and advanced ad-skipping algorithms designed to defeat complex server-side ads on premium streaming platforms.
 
-Since this extension is not currently published on the Chrome Web Store, you will need to install it locally using Developer Mode. Follow these simple steps:
+<p align="center">
+  <img src="assets/screenshot.png" width="300" alt="Blockium Neumorphic Dashboard">
+</p>
 
-1. **Open the Extensions Page**
-   Open Google Chrome, type `chrome://extensions/` into the URL address bar, and hit **Enter**.
+## 🚀 Key Features
 
-2. **Enable Developer Mode**
-   In the top-right corner of the Extensions page, you will see a toggle switch labeled **Developer mode**. Turn it **ON**.
+- **Modern Neumorphism UI**: A beautiful, tactile "Soft UI" dashboard that looks incredible and feels native to modern operating systems.
+- **Manifest V3 Core Engine**: Utilizes the latest `declarativeNetRequest` API for zero-overhead, ultra-fast network blocking.
+- **Real-time Analytics**: Tracks ads blocked and calculates bandwidth saved on the fly.
+- **Dynamic Badge Counter**: Instantly displays how many ads were blocked on the current page right on the extension icon.
 
-3. **Load the Extension**
-   Once Developer Mode is enabled, three new buttons will appear in the top-left corner. Click the button that says **Load unpacked**.
+## 🎯 Advanced Ad-Skipping Support
 
-4. **Select the Folder**
-   A file browser window will open. Navigate to the `adblocker` folder on your computer (the folder containing the `manifest.json` file). Select the folder and click **Select** or **Open**.
+Blockium goes beyond standard network blocking. We have engineered dedicated, platform-specific content scripts to fight back against the newest unskippable ads:
 
-5. **Pin the Extension (Optional but Recommended)**
-   The Blockium extension is now installed! To keep it visible in your toolbar at all times, click the gray **Puzzle Piece** icon in the top-right corner of Chrome, find Blockium in the dropdown list, and click the **Pin** icon next to it.
+- **YouTube**: Bypasses YouTube's new Server-Side Ad Insertion (SSAI). When an ad plays, Blockium silently intercepts the HTML5 video player and forces it to fast-forward to the very end instantly.
+- **Amazon Prime Video / Freevee**: Uses a highly aggressive brute-force algorithm. Since Amazon obfuscates their ad code, Blockium monitors the length of the video playing. If it's a short 3-minute video playing before your movie, it instantly mutes and fast-forwards it at 16x speed!
+- **Hotstar**: Contains dedicated DOM-cleaning rules to strip out native banner ads without breaking the video player.
 
-## Troubleshooting
+## 🛠️ Developer Mode Installation
 
-- **Extension not updating?** If you make code changes, go to `chrome://extensions/` and click the circular **Reload** (↻) icon on the Blockium card to restart it.
-- **Data dashboard not working?** Same as above, make sure you reload the extension so the background tracking script can boot up properly.
+Since this is a custom, unlisted extension, you will need to install it manually:
+
+1. Download or clone this repository to your computer.
+2. Open Google Chrome.
+3. In the address bar, type `chrome://extensions/` and hit Enter.
+4. Look at the top right corner of the page and turn on the **Developer mode** toggle.
+5. Click the **Load unpacked** button that appears in the top left.
+6. Select the `adblocker` folder that you just downloaded.
+7. *Optional but recommended*: Click the puzzle piece icon in your browser toolbar and "Pin" Blockium so you can easily access the Neumorphic dashboard!
+
+---
+*Built with ❤️ using the latest Manifest V3 web standards.*
