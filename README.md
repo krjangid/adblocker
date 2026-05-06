@@ -1,41 +1,116 @@
 # Blockium Adblocker
 
 <p align="center">
-  <img src="assets/logo.png" width="150" alt="Blockium Logo">
+  <img src="assets/logo.png" width="130" alt="Blockium Logo">
 </p>
-
-Blockium is a modern, lightning-fast Chrome extension built on **Manifest V3**. It provides robust network-level ad blocking, cosmetic filtering, and advanced ad-skipping algorithms designed to defeat complex server-side ads on premium streaming platforms.
 
 <p align="center">
-  <img src="assets/screenshot.png" width="300" alt="Blockium Neumorphic Dashboard">
+  <strong>A premium, lightning-fast Chrome extension powered by Manifest V3.</strong><br>
+  Block ads, trackers, malware and phishing sites — with a beautiful real-time Privacy Dashboard.
 </p>
+
+---
+
+## 📸 Screenshots
+
+### Extension Popup
+<p align="center">
+  <img src="assets/popup.png" width="320" alt="Blockium Popup">
+</p>
+
+### Privacy Dashboard — Overview
+<p align="center">
+  <img src="assets/dashboard-overview.png" width="800" alt="Privacy Dashboard Overview">
+</p>
+
+### Privacy Dashboard — Live Feed
+<p align="center">
+  <img src="assets/dashboard-livefeed.png" width="800" alt="Live Feed">
+</p>
+
+### Privacy Dashboard — Tracker Hall of Shame
+<p align="center">
+  <img src="assets/dashboard-shame.png" width="800" alt="Tracker Hall of Shame">
+</p>
+
+---
 
 ## 🚀 Key Features
 
-- **Modern Neumorphism UI**: A beautiful, tactile "Soft UI" dashboard that looks incredible and feels native to modern operating systems.
-- **Manifest V3 Core Engine**: Utilizes the latest `declarativeNetRequest` API for zero-overhead, ultra-fast network blocking.
-- **Real-time Analytics**: Tracks ads blocked and calculates bandwidth saved on the fly.
-- **Dynamic Badge Counter**: Instantly displays how many ads were blocked on the current page right on the extension icon.
+### 🆓 Free Tier
+- **Manifest V3 Core Engine** — Uses Chrome's native `declarativeNetRequest` API for zero-overhead, ultra-fast network-level ad blocking.
+- **Neumorphism UI** — Beautiful, tactile "Soft UI" popup with real-time analytics (Ads Blocked, Total Blocked, Bandwidth Saved).
+- **Dynamic Badge Counter** — Instantly shows how many ads were blocked on the current page on the extension icon.
+- **Streaming Ad-Skipping** — Dedicated content scripts for YouTube, Amazon Prime Video, and Hotstar.
+
+### 👑 PRO Tier — Malware & Tracker Shield
+- **Tracker Blocking** — Silently blocks invisible tracking scripts from Google Analytics, Facebook Pixel, TikTok, Hotjar, Segment, Mixpanel, and more.
+- **Malware Protection** — Blocks known malware domains and drive-by download sites before they can load.
+- **Phishing Protection** — Intercepts known phishing URLs before the page opens.
+- **Cryptomining Block** — Stops browser-based cryptocurrency miners (Coinhive, Minero, JSECoin, etc.) from hijacking your CPU.
+
+---
+
+## 📊 Real-time Privacy Dashboard
+
+Click **"📊 View Privacy Dashboard"** in the popup to open a full-page analytics dashboard:
+
+| Section | What it shows |
+|---|---|
+| **Overview** | 4 stat cards + 7-day blocking activity line graph + Blocked-by-Type donut chart + Top 5 tracking websites bar chart |
+| **Live Feed** | Real-time log of the last 10 blocked requests with domain name, type badge (AD / TRACKER / MALWARE), and timestamp |
+| **Hall of Shame** | Ranked leaderboard of the companies that tried to track you the most, with attempt counts |
+
+The dashboard **auto-refreshes every 5 seconds** so you can watch blocks happening in real-time.
+
+---
 
 ## 🎯 Advanced Ad-Skipping Support
 
-Blockium goes beyond standard network blocking. We have engineered dedicated, platform-specific content scripts to fight back against the newest unskippable ads:
+| Platform | Method |
+|---|---|
+| **YouTube** | Detects ads via the HTML5 video player and instantly fast-forwards to the end. Also auto-clicks "Skip Ad" buttons. |
+| **Amazon Prime Video** | Detects Freevee ads by duration (< 3 min) and fast-forwards at 16× speed. |
+| **Hotstar** | Cosmetic DOM filtering to strip banner and overlay ads without breaking the player. |
+| **All websites** | Network-level blocking of ad servers, tracking pixels, and analytics scripts. |
 
-- **YouTube**: Bypasses YouTube's new Server-Side Ad Insertion (SSAI). When an ad plays, Blockium silently intercepts the HTML5 video player and forces it to fast-forward to the very end instantly.
-- **Amazon Prime Video / Freevee**: Uses a highly aggressive brute-force algorithm. Since Amazon obfuscates their ad code, Blockium monitors the length of the video playing. If it's a short 3-minute video playing before your movie, it instantly mutes and fast-forwards it at 16x speed!
-- **Hotstar**: Contains dedicated DOM-cleaning rules to strip out native banner ads without breaking the video player.
+---
 
 ## 🛠️ Developer Mode Installation
 
-Since this is a custom, unlisted extension, you will need to install it manually:
-
-1. Download or clone this repository to your computer.
-2. Open Google Chrome.
-3. In the address bar, type `chrome://extensions/` and hit Enter.
-4. Look at the top right corner of the page and turn on the **Developer mode** toggle.
-5. Click the **Load unpacked** button that appears in the top left.
-6. Select the `adblocker` folder that you just downloaded.
-7. *Optional but recommended*: Click the puzzle piece icon in your browser toolbar and "Pin" Blockium so you can easily access the Neumorphic dashboard!
+1. Download or clone this repository.
+2. Open Google Chrome → go to `chrome://extensions/`.
+3. Turn on **Developer mode** (top right toggle).
+4. Click **Load unpacked** and select the `adblocker` folder.
+5. Pin Blockium from the puzzle-piece icon in the toolbar.
+6. Enable the **PRO toggle** inside the popup to activate Malware & Tracker Shield.
 
 ---
-*Built with ❤️ using the latest Manifest V3 web standards.*
+
+## 🗂️ Project Structure
+
+```
+adblocker/
+├── manifest.json          # MV3 manifest with dual rulesets
+├── background.js          # Service worker: ruleset control + analytics tracking
+├── content.js             # Cosmetic filtering for all websites
+├── youtube.js             # YouTube ad-skip content script
+├── prime.js               # Amazon Prime ad-skip content script
+├── rules.json             # Core ad-blocking rules (always enabled)
+├── malware_rules.json     # PRO tracker/malware rules (enabled on demand)
+├── popup/
+│   ├── popup.html         # Neumorphic popup UI
+│   ├── popup.css          # Soft UI styles
+│   └── popup.js           # Popup logic + toggle handlers
+├── dashboard/
+│   ├── dashboard.html     # Full-page privacy dashboard
+│   ├── dashboard.css      # Dashboard styles
+│   ├── dashboard.js       # Chart.js charts + live data loader
+│   └── chart.min.js       # Bundled Chart.js (no CDN, CSP compliant)
+├── icons/                 # Extension icons (16, 48, 128px)
+└── assets/                # README screenshots
+```
+
+---
+
+*Built with ❤️ using Manifest V3 web standards. Version 2.0.0*
