@@ -170,6 +170,61 @@ input:checked + .slider:before {
   box-shadow: 0 0 10px var(--accent-blue-light);
 }
 
+input:checked + .premium-slider:before {
+  background-color: var(--accent-orange);
+  box-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+}
+
+/* PRO Card */
+.pro-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  border: 1.5px solid transparent;
+  background: linear-gradient(var(--bg-color), var(--bg-color)) padding-box,
+              linear-gradient(135deg, var(--accent-orange), #f7c67a) border-box;
+  transition: 0.3s;
+}
+
+.pro-card.active {
+  background: linear-gradient(var(--bg-color), var(--bg-color)) padding-box,
+              linear-gradient(135deg, var(--accent-orange), #2ecc71) border-box;
+}
+
+.pro-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pro-badge {
+  background: linear-gradient(135deg, var(--accent-orange), #f7c67a);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  box-shadow: 0 2px 6px rgba(243, 156, 18, 0.4);
+  white-space: nowrap;
+}
+
+.pro-info h2 {
+  font-size: 12px;
+  color: var(--text-dark);
+  margin: 0 0 2px 0;
+  font-weight: 700;
+}
+
+.pro-info p {
+  font-size: 10px;
+  color: var(--text-light);
+  margin: 0;
+  font-weight: 600;
+}
+
 /* Analytics */
 .dashboard-title {
   font-size: 15px;
@@ -228,27 +283,29 @@ input:checked + .slider:before {
   font-weight: 600;
 }
 
-/* Footer */
+/* Footer & Dashboard Button */
 .footer {
+  margin-top: 5px;
   display: flex;
   justify-content: center;
 }
 
-.neumorphic-btn {
-  background-color: var(--bg-color);
-  box-shadow: var(--sm-out-shadow);
+.dashboard-btn {
+  width: 100%;
+  padding: 12px;
   border: none;
-  border-radius: 20px;
-  padding: 10px 20px;
+  background: var(--bg-color);
+  box-shadow: var(--out-shadow);
   font-family: 'Poppins', sans-serif;
-  color: var(--text-light);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--accent-blue);
   cursor: pointer;
+  border-radius: 15px;
   transition: 0.2s;
+  letter-spacing: 0.3px;
 }
 
-.neumorphic-btn:active {
-  box-shadow: var(--sm-in-shadow);
-  color: var(--text-dark);
+.dashboard-btn:active {
+  box-shadow: var(--in-shadow);
 }

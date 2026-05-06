@@ -30,20 +30,36 @@
       </div>
     </div>
 
+    <div class="pro-card neumorphic-out" id="pro-card">
+      <div class="pro-header">
+        <div class="pro-badge">PRO</div>
+        <div class="pro-info">
+          <h2>Malware & Tracker Shield</h2>
+          <p id="pro-subtext">Activate to block trackers &amp; malware</p>
+        </div>
+      </div>
+      <div class="toggle-container">
+        <label class="switch">
+          <input type="checkbox" id="premium-switch">
+          <span class="slider round neumorphic-in premium-slider"></span>
+        </label>
+      </div>
+    </div>
+
     <h4 class="dashboard-title">Analytics Dashboard</h4>
     <div class="dashboard-grid">
       <div class="stat-card neumorphic-out">
         <div class="icon-wrapper blue neumorphic-in"><span class="icon">🚫</span></div>
-        <span class="stat-label">Ads Blocked Today</span>
+        <span class="stat-label">Ads Blocked</span>
         <span id="page-blocked" class="stat-value">0</span>
-        <span class="stat-sub">Current page</span>
+        <span class="stat-sub">This page</span>
       </div>
       
       <div class="stat-card neumorphic-out">
         <div class="icon-wrapper orange neumorphic-in"><span class="icon">🛡️</span></div>
-        <span class="stat-label">Trackers Prevented</span>
+        <span class="stat-label">Total Blocked</span>
         <span id="total-blocked" class="stat-value">0</span>
-        <span class="stat-sub">Total blocked</span>
+        <span class="stat-sub">All time</span>
       </div>
 
       <div class="stat-card neumorphic-out">
@@ -52,6 +68,10 @@
         <span id="data-saved" class="stat-value">0 MB</span>
         <span class="stat-sub">Usage saved</span>
       </div>
+    </div>
+
+    <div class="footer">
+      <button class="dashboard-btn neumorphic-out" id="open-dashboard">📊 View Privacy Dashboard</button>
     </div>
   </div>
   <script src="popup.js"></script>

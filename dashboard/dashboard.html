@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blockium — Privacy Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="chart.min.js"></script>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="page">
+
+    <!-- Sidebar -->
+    <aside class="sidebar neumorphic-out">
+      <div class="brand">
+        <img src="../icons/icon48.png" alt="Blockium" class="brand-logo">
+        <h1>Blockium</h1>
+      </div>
+      <nav>
+        <a href="#" class="nav-link active" id="nav-overview">📊 Overview</a>
+        <a href="#" class="nav-link" id="nav-livefeed">🌍 Live Feed</a>
+        <a href="#" class="nav-link" id="nav-topsites">🏆 Hall of Shame</a>
+      </nav>
+      <div class="sidebar-stats">
+        <div class="mini-stat neumorphic-in">
+          <span class="mini-label">Total Blocked</span>
+          <span class="mini-value" id="sb-total">0</span>
+        </div>
+        <div class="mini-stat neumorphic-in">
+          <span class="mini-label">Data Saved</span>
+          <span class="mini-value" id="sb-data">0 MB</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+
+      <!-- Overview Section -->
+      <section id="section-overview" class="section active">
+        <div class="section-header">
+          <h2>Privacy Overview</h2>
+          <p>Your blocking activity at a glance</p>
+        </div>
+
+        <!-- Top stat cards -->
+        <div class="stat-row">
+          <div class="stat-card neumorphic-out">
+            <div class="stat-icon blue">🚫</div>
+            <div class="stat-info">
+              <span class="stat-num" id="card-ads">0</span>
+              <span class="stat-lbl">Ads Blocked</span>
+            </div>
+          </div>
+          <div class="stat-card neumorphic-out">
+            <div class="stat-icon orange">👁️</div>
+            <div class="stat-info">
+              <span class="stat-num" id="card-trackers">0</span>
+              <span class="stat-lbl">Trackers Stopped</span>
+            </div>
+          </div>
+          <div class="stat-card neumorphic-out">
+            <div class="stat-icon red">🦠</div>
+            <div class="stat-info">
+              <span class="stat-num" id="card-malware">0</span>
+              <span class="stat-lbl">Malware Blocked</span>
+            </div>
+          </div>
+          <div class="stat-card neumorphic-out">
+            <div class="stat-icon green">💾</div>
+            <div class="stat-info">
+              <span class="stat-num" id="card-data">0 MB</span>
+              <span class="stat-lbl">Bandwidth Saved</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts row -->
+        <div class="charts-row">
+          <div class="chart-card neumorphic-out">
+            <h3>Blocking Activity — Last 7 Days</h3>
+            <canvas id="lineChart" height="120"></canvas>
+          </div>
+          <div class="chart-card small neumorphic-out">
+            <h3>Blocked by Type</h3>
+            <canvas id="donutChart" height="200"></canvas>
+            <div class="donut-legend" id="donut-legend"></div>
+          </div>
+        </div>
+
+        <!-- Top 5 bar chart -->
+        <div class="chart-card neumorphic-out">
+          <h3>📊 Top 5 Tracking Websites Today</h3>
+          <canvas id="barChart" height="80"></canvas>
+        </div>
+      </section>
+
+      <!-- Live Feed Section -->
+      <section id="section-livefeed" class="section">
+        <div class="section-header">
+          <h2>🌍 Live Feed</h2>
+          <p>Last 10 blocked requests in real-time</p>
+        </div>
+        <div class="chart-card neumorphic-out">
+          <ul class="feed-list" id="feed-list">
+            <li class="feed-empty">No blocked requests recorded yet. Browse the web with Blockium enabled!</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Hall of Shame Section -->
+      <section id="section-topsites" class="section">
+        <div class="section-header">
+          <h2>🏆 Tracker Hall of Shame</h2>
+          <p>Companies that tried to track you the most</p>
+        </div>
+        <div class="chart-card neumorphic-out">
+          <div class="shame-list" id="shame-list">
+            <p class="feed-empty">No tracker data yet. Browse the web with Blockium enabled!</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

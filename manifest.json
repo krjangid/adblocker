@@ -1,14 +1,15 @@
 {
   "manifest_version": 3,
   "name": "Blockium",
-  "version": "1.0.0",
-  "description": "Blocks ads across the web, including specific rules for streaming platforms like Hotstar.",
+  "version": "2.0.0",
+  "description": "Premium ad blocker with malware, phishing & tracker protection for YouTube, Hotstar, Amazon Prime and the entire web.",
   "permissions": [
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess",
     "declarativeNetRequestFeedback",
     "storage",
-    "scripting"
+    "scripting",
+    "tabs"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -52,7 +53,18 @@
         "id": "ruleset_1",
         "enabled": true,
         "path": "rules.json"
+      },
+      {
+        "id": "malware_rules",
+        "enabled": false,
+        "path": "malware_rules.json"
       }
     ]
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["dashboard/dashboard.html", "dashboard/dashboard.css", "dashboard/dashboard.js", "dashboard/chart.min.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
