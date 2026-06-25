@@ -742,7 +742,8 @@ input:checked + .cookie-slider:before {
 }
 
 .dashboard-grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   margin-bottom: 22px;
 }
@@ -802,6 +803,15 @@ input:checked + .cookie-slider:before {
 .icon-wrapper.green {
   color: var(--accent-green);
   box-shadow: 0 0 10px rgba(0, 255, 136, 0.15);
+}
+
+.icon-wrapper.purple {
+  color: #a78bfa;
+  box-shadow: 0 0 10px rgba(167, 139, 250, 0.15);
+}
+
+body[data-theme="light"] .icon-wrapper.purple {
+  color: #8b5cf6;
 }
 
 .stat-label {

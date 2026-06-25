@@ -55,3 +55,34 @@ function removeCosmeticFiltering() {
     style.remove();
   }
 }
+
+// ---- Speed / Page Load Timer ----
+function measureSpeed() {
+  const navTiming = performance.getEntriesByType('navigation')[0];
+  if (navTiming && navTiming.loadEventEnd > 0) {
+    const loadTime = (navTiming.loadEventEnd - navTiming.startTime) / 1000;
+    sendSpeed(loadTime);
+  } else {
+    const t = performance.timing;
+    if (t && t.loadEventEnd > 0) {
+      const loadTime = (t.loadEventEnd - t.navigationStart) / 1000;
+      sendSpeed(loadTime);
+    } else {
+      setTimeout(measureSpeed, 100);
+    }
+  }
+}
+
+function sendSpeed(speed) {
+  if (speed > 0 && speed < 120) {
+    chrome.runtime.sendMessage({ type: 'page_speed', speed: speed });
+  }
+}
+
+if (document.readyState === 'complete') {
+  measureSpeed();
+} else {
+  window.addEventListener('load', () => {
+    setTimeout(measureSpeed, 0);
+  });
+}

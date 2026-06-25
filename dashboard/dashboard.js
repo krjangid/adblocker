@@ -293,13 +293,14 @@ function renderShame(topSites) {
 
 // Load all data and render
 function loadDashboard() {
-  chrome.storage.local.get(['totalAdsBlocked', 'totalDataSaved', 'typeBreakdown', 'dailyCounts', 'topSites', 'liveFeed'], (result) => {
+  chrome.storage.local.get(['totalAdsBlocked', 'totalDataSaved', 'typeBreakdown', 'dailyCounts', 'topSites', 'liveFeed', 'averageLoadTime'], (result) => {
     const total = result.totalAdsBlocked || 0;
     const dataMB = ((result.totalDataSaved || 0) / 1024).toFixed(2);
     const breakdown = result.typeBreakdown || { ads: 0, trackers: 0, malware: 0 };
     const daily = result.dailyCounts || {};
     const sites = result.topSites || {};
     const feed = result.liveFeed || [];
+    const avgSpeed = result.averageLoadTime || 0;
 
     // Sidebar
     document.getElementById('sb-total').textContent = total.toLocaleString();
@@ -310,6 +311,7 @@ function loadDashboard() {
     document.getElementById('card-trackers').textContent = (breakdown.trackers || 0).toLocaleString();
     document.getElementById('card-malware').textContent = (breakdown.malware || 0).toLocaleString();
     document.getElementById('card-data').textContent = dataMB + ' MB';
+    document.getElementById('card-speed').textContent = avgSpeed ? avgSpeed.toFixed(2) + 's' : '0.00s';
 
     // Charts
     initCharts(breakdown, daily, sites);

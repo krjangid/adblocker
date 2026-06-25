@@ -41,6 +41,7 @@
 - **Liquid Glass Theme** 🌗 — Switch between a premium, frosted-glass dark theme and light theme directly from the popup header. Theme settings automatically sync between the popup and the main privacy dashboard.
 - **Threat Notification Alerts** 🔔 — Opt-in real-time desktop alerts when malware or tracker requests are blocked. Smart anti-spam logic limits notifications to one per category/tab to prevent visual clutter.
 - **Cookie Consent Auto-Dismiss** 🍪 — Automatically rejects cookie popups and banners on 10+ major frameworks (OneTrust, Cookiebot, Osano, Didomi, Complianz, CookieYes, Termly) using smart DOM observation, and falls back to hiding annoying banners to restore normal page scrolling.
+- **Speed/Page Load Timer** ⚡ — Real-time performance analysis measuring page load times of current tabs via Navigation Timing APIs. Collects global load speed statistics to display running average performance inside the Privacy Dashboard.
 
 ### 🆓 Free Tier
 - **Manifest V3 Core Engine** — Uses Chrome's native `declarativeNetRequest` API for zero-overhead, ultra-fast network-level ad blocking.

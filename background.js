@@ -1,6 +1,6 @@
 // Background script initialized
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.local.get(['adblockEnabled', 'premiumEnabled', 'notifyEnabled', 'totalAdsBlocked', 'totalDataSaved', 'liveFeed', 'topSites', 'typeBreakdown', 'dailyCounts'], (result) => {
+  chrome.storage.local.get(['adblockEnabled', 'premiumEnabled', 'notifyEnabled', 'cookieDismissEnabled', 'totalAdsBlocked', 'totalDataSaved', 'liveFeed', 'topSites', 'typeBreakdown', 'dailyCounts', 'averageLoadTime', 'totalPageLoads'], (result) => {
     const updates = {};
     if (result.adblockEnabled === undefined) updates.adblockEnabled = true;
     if (result.premiumEnabled === undefined) updates.premiumEnabled = false;
@@ -8,6 +8,8 @@ chrome.runtime.onInstalled.addListener(() => {
     if (result.cookieDismissEnabled === undefined) updates.cookieDismissEnabled = false;
     if (result.totalAdsBlocked === undefined) updates.totalAdsBlocked = 0;
     if (result.totalDataSaved === undefined) updates.totalDataSaved = 0;
+    if (result.averageLoadTime === undefined) updates.averageLoadTime = 0;
+    if (result.totalPageLoads === undefined) updates.totalPageLoads = 0;
     if (!result.liveFeed) updates.liveFeed = [];
     if (!result.topSites) updates.topSites = {};
     if (!result.typeBreakdown) updates.typeBreakdown = { ads: 0, trackers: 0, malware: 0 };
@@ -86,11 +88,14 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 
 // Clear notification tracking when a tab is closed
 chrome.tabs.onRemoved.addListener((tabId) => {
+  // Clean up notifications dedup data
   for (const key of notifiedTabs.keys()) {
     if (key.startsWith(`${tabId}-`)) {
       notifiedTabs.delete(key);
     }
   }
+  // Clean up tab speed tracking metrics
+  chrome.storage.local.remove([`loadTime_${tabId}`]);
 });
 
 // Process a list of matched rules and update storage
@@ -200,4 +205,27 @@ function updatePremiumRuleset(isEnabled) {
 chrome.storage.local.get(['adblockEnabled', 'premiumEnabled'], (result) => {
   updateRulesetStatus(result.adblockEnabled !== false);
   updatePremiumRuleset(result.premiumEnabled === true);
+});
+
+// Listen for page load speed metrics from content scripts
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'page_speed' && sender.tab && sender.tab.id) {
+    const tabId = sender.tab.id;
+    const speed = message.speed;
+    
+    // Store current tab's load time
+    chrome.storage.local.set({ [`loadTime_${tabId}`]: speed });
+
+    // Update global average page speed metric
+    chrome.storage.local.get(['totalPageLoads', 'averageLoadTime'], (result) => {
+      const count = result.totalPageLoads || 0;
+      const avg = result.averageLoadTime || 0;
+      const newCount = count + 1;
+      const newAvg = ((avg * count) + speed) / newCount;
+      chrome.storage.local.set({
+        totalPageLoads: newCount,
+        averageLoadTime: newAvg
+      });
+    });
+  }
 });

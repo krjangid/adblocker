@@ -143,6 +143,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Get current tab page load speed
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs[0] && tabs[0].id) {
+      const tabId = tabs[0].id;
+      chrome.storage.local.get([`loadTime_${tabId}`], (result) => {
+        const speed = result[`loadTime_${tabId}`];
+        const pageLoadEl = document.getElementById('page-load-time');
+        if (pageLoadEl) {
+          pageLoadEl.textContent = speed ? speed.toFixed(2) + 's' : '--';
+        }
+      });
+    }
+  });
+
+  // Listen for real-time page speed updates while popup is open
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === 'local') {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs[0] && tabs[0].id) {
+          const tabId = tabs[0].id;
+          const key = `loadTime_${tabId}`;
+          if (changes[key]) {
+            const pageLoadEl = document.getElementById('page-load-time');
+            if (pageLoadEl) {
+              const speed = changes[key].newValue;
+              pageLoadEl.textContent = speed ? speed.toFixed(2) + 's' : '--';
+            }
+          }
+        }
+      });
+    }
+  });
+
   // Open dashboard in new tab
   document.getElementById('open-dashboard').addEventListener('click', () => {
     chrome.tabs.create({ url: chrome.runtime.getURL('dashboard/dashboard.html') });
