@@ -91,6 +91,14 @@ The dashboard **auto-refreshes every 5 seconds** so you can watch blocks happeni
 5. Pin Blockium from the puzzle-piece icon in the toolbar.
 6. Enable the **PRO toggle** inside the popup to activate Malware & Tracker Shield.
 
+## 🔔 macOS Notification Setup (Troubleshooting)
+
+If you have enabled **Threat Alerts** but are not receiving notifications on your Mac, it is likely because macOS is blocking Chrome notifications:
+1. Open your Mac's **System Settings**.
+2. Go to **Notifications** in the sidebar.
+3. Scroll down the list and click on **Google Chrome**.
+4. Toggle **Allow Notifications** to **ON**.
+
 ---
 
 ## 🗂️ Project Structure
