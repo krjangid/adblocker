@@ -18,6 +18,48 @@ function badgeLabel(category) {
   return 'AD';
 }
 
+// ---- Theme ----
+const themeToggle = document.getElementById('theme-toggle-dash');
+const themeIcon = document.getElementById('theme-icon-dash');
+
+function applyTheme(theme) {
+  document.body.setAttribute('data-theme', theme);
+  themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+
+// Load saved theme
+chrome.storage.local.get(['theme'], (result) => {
+  applyTheme(result.theme || 'dark');
+});
+
+themeToggle.addEventListener('click', () => {
+  const current = document.body.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  chrome.storage.local.set({ theme: next });
+  // Reload charts with new theme colors
+  loadDashboard();
+});
+
+// ---- Theme-aware chart colors ----
+function getChartColors() {
+  const isLight = document.body.getAttribute('data-theme') === 'light';
+  return {
+    blue: isLight ? '#3b82f6' : '#60a5fa',
+    orange: isLight ? '#f59e0b' : '#fbbf24',
+    red: isLight ? '#ef4444' : '#f87171',
+    green: isLight ? '#10b981' : '#34d399',
+    purple: isLight ? '#8b5cf6' : '#a78bfa',
+    textColor: isLight ? 'rgba(30, 40, 80, 0.5)' : 'rgba(255, 255, 255, 0.5)',
+    gridColor: isLight ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.06)',
+    borderColor: isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)',
+    gradientTop: isLight ? 'rgba(59, 130, 246, 0.2)' : 'rgba(96, 165, 250, 0.25)',
+    gradientBottom: isLight ? 'rgba(59, 130, 246, 0)' : 'rgba(96, 165, 250, 0)',
+    barBg: isLight ? 'rgba(59, 130, 246, 0.25)' : 'rgba(96, 165, 250, 0.35)',
+    barHover: isLight ? 'rgba(59, 130, 246, 0.5)' : 'rgba(96, 165, 250, 0.6)',
+  };
+}
+
 // Navigation
 const sections = {
   'nav-overview': 'section-overview',
@@ -31,7 +73,13 @@ document.querySelectorAll('.nav-link').forEach(link => {
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     link.classList.add('active');
-    document.getElementById(sections[link.id]).classList.add('active');
+    const sectionId = sections[link.id];
+    document.getElementById(sectionId).classList.add('active');
+
+    // Re-render charts when switching back to overview (they need visible canvas)
+    if (sectionId === 'section-overview') {
+      setTimeout(() => initCharts(latestBreakdown, latestDaily, latestSites), 50);
+    }
   });
 });
 
@@ -59,20 +107,37 @@ function getLast7DayKeys() {
   return keys;
 }
 
-// Chart.js global defaults — Neumorphic style
+// Chart.js global defaults — Liquid Glass style
 Chart.defaults.font.family = 'Poppins';
-Chart.defaults.color = '#7a8a9e';
+
+// Store latest data so we can re-render when switching tabs
+let latestBreakdown = {}, latestDaily = {}, latestSites = {};
 
 function initCharts(breakdown, dailyCounts, topSites) {
+  // Store data for deferred rendering
+  latestBreakdown = breakdown;
+  latestDaily = dailyCounts;
+  latestSites = topSites;
+
+  // Only render charts if the overview section is visible
+  const overviewSection = document.getElementById('section-overview');
+  if (!overviewSection || !overviewSection.classList.contains('active')) return;
+
+  const c = getChartColors();
+  Chart.defaults.color = c.textColor;
+
   // --- Line Chart ---
+  const lineCanvas = document.getElementById('lineChart');
+  if (!lineCanvas || lineCanvas.offsetWidth === 0) return;
+
   const dayKeys = getLast7DayKeys();
   const dayLabels = getLast7DayLabels();
   const dayData = dayKeys.map(k => dailyCounts[k] || 0);
 
-  const lineCtx = document.getElementById('lineChart').getContext('2d');
+  const lineCtx = lineCanvas.getContext('2d');
   const gradient = lineCtx.createLinearGradient(0, 0, 0, 200);
-  gradient.addColorStop(0, 'rgba(74, 144, 226, 0.3)');
-  gradient.addColorStop(1, 'rgba(74, 144, 226, 0)');
+  gradient.addColorStop(0, c.gradientTop);
+  gradient.addColorStop(1, c.gradientBottom);
 
   if (lineChart) lineChart.destroy();
   lineChart = new Chart(lineCtx, {
@@ -81,20 +146,25 @@ function initCharts(breakdown, dailyCounts, topSites) {
       labels: dayLabels,
       datasets: [{
         data: dayData,
-        borderColor: '#4a90e2',
+        borderColor: c.blue,
         backgroundColor: gradient,
         borderWidth: 2.5,
-        pointBackgroundColor: '#4a90e2',
+        pointBackgroundColor: c.blue,
         pointRadius: 4,
+        pointBorderColor: c.blue + '99',
+        pointBorderWidth: 2,
         tension: 0.4,
         fill: true
       }]
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 0 },
       plugins: { legend: { display: false } },
       scales: {
-        x: { grid: { color: 'rgba(163,177,198,0.3)' } },
-        y: { beginAtZero: true, grid: { color: 'rgba(163,177,198,0.3)' }, ticks: { stepSize: 1 } }
+        x: { grid: { color: c.gridColor }, border: { color: c.borderColor } },
+        y: { beginAtZero: true, grid: { color: c.gridColor }, border: { color: c.borderColor }, ticks: { precision: 0 } }
       }
     }
   });
@@ -113,12 +183,15 @@ function initCharts(breakdown, dailyCounts, topSites) {
       labels: ['Ads', 'Trackers', 'Malware'],
       datasets: [{
         data: total === 0 ? [1, 0, 0] : [ads, trackers, malware],
-        backgroundColor: ['#4a90e2', '#f39c12', '#e74c3c'],
+        backgroundColor: [c.blue, c.orange, c.red],
         borderWidth: 0,
         hoverOffset: 8
       }]
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 0 },
       cutout: '65%',
       plugins: {
         legend: { display: false },
@@ -131,14 +204,14 @@ function initCharts(breakdown, dailyCounts, topSites) {
   const legend = document.getElementById('donut-legend');
   const totalLabel = total === 0 ? 1 : total;
   legend.innerHTML = [
-    { label: 'Ads', color: '#4a90e2', val: ads },
-    { label: 'Trackers', color: '#f39c12', val: trackers },
-    { label: 'Malware', color: '#e74c3c', val: malware }
+    { label: 'Ads', color: c.blue, val: ads },
+    { label: 'Trackers', color: c.orange, val: trackers },
+    { label: 'Malware', color: c.red, val: malware }
   ].map(item => `
     <div class="legend-item">
       <div class="legend-dot" style="background:${item.color}"></div>
       <span>${item.label}</span>
-      <span style="margin-left:auto;color:#4a90e2;font-weight:700">${Math.round(item.val / totalLabel * 100)}%</span>
+      <span style="margin-left:auto;color:${c.blue};font-weight:700">${Math.round(item.val / totalLabel * 100)}%</span>
     </div>
   `).join('');
 
@@ -157,19 +230,22 @@ function initCharts(breakdown, dailyCounts, topSites) {
       labels: barLabels.length ? barLabels : ['No data yet'],
       datasets: [{
         data: barData.length ? barData : [0],
-        backgroundColor: 'rgba(74, 144, 226, 0.6)',
-        borderColor: '#4a90e2',
+        backgroundColor: c.barBg,
+        borderColor: c.blue,
         borderWidth: 1.5,
         borderRadius: 8,
-        hoverBackgroundColor: '#4a90e2'
+        hoverBackgroundColor: c.barHover
       }]
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 0 },
       indexAxis: 'y',
       plugins: { legend: { display: false } },
       scales: {
-        x: { beginAtZero: true, grid: { color: 'rgba(163,177,198,0.3)' }, ticks: { stepSize: 1 } },
-        y: { grid: { display: false } }
+        x: { beginAtZero: true, grid: { color: c.gridColor }, border: { color: c.borderColor }, ticks: { precision: 0 } },
+        y: { grid: { display: false }, border: { color: c.borderColor } }
       }
     }
   });

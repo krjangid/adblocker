@@ -16,6 +16,9 @@
       <div class="brand">
         <img src="../icons/icon48.png" alt="Blockium" class="brand-logo">
         <h1>Blockium</h1>
+        <button class="theme-toggle-dash" id="theme-toggle-dash" title="Toggle theme">
+          <span class="theme-icon-dash" id="theme-icon-dash">☀️</span>
+        </button>
       </div>
       <nav>
         <a href="#" class="nav-link active" id="nav-overview">📊 Overview</a>
@@ -80,11 +83,15 @@
         <div class="charts-row">
           <div class="chart-card neumorphic-out">
             <h3>Blocking Activity — Last 7 Days</h3>
-            <canvas id="lineChart" height="120"></canvas>
+            <div class="chart-container" style="position: relative; height: 220px; width: 100%;">
+              <canvas id="lineChart"></canvas>
+            </div>
           </div>
           <div class="chart-card small neumorphic-out">
             <h3>Blocked by Type</h3>
-            <canvas id="donutChart" height="200"></canvas>
+            <div class="chart-container" style="position: relative; height: 160px; width: 100%;">
+              <canvas id="donutChart"></canvas>
+            </div>
             <div class="donut-legend" id="donut-legend"></div>
           </div>
         </div>
@@ -92,7 +99,9 @@
         <!-- Top 5 bar chart -->
         <div class="chart-card neumorphic-out">
           <h3>📊 Top 5 Tracking Websites Today</h3>
-          <canvas id="barChart" height="80"></canvas>
+          <div class="chart-container" style="position: relative; height: 180px; width: 100%;">
+            <canvas id="barChart"></canvas>
+          </div>
         </div>
       </section>
 

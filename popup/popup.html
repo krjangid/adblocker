@@ -15,6 +15,9 @@
       <div class="header-text">
         <h1>Blockium <span class="status-dot" id="status-dot"></span></h1>
       </div>
+      <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+        <span class="theme-icon" id="theme-icon">☀️</span>
+      </button>
     </div>
     
     <div class="protection-card neumorphic-out">
@@ -34,7 +37,7 @@
       <div class="pro-header">
         <div class="pro-badge">PRO</div>
         <div class="pro-info">
-          <h2>Malware & Tracker Shield</h2>
+          <h2>Malware &amp; Tracker Shield</h2>
           <p id="pro-subtext">Activate to block trackers &amp; malware</p>
         </div>
       </div>
@@ -42,6 +45,38 @@
         <label class="switch">
           <input type="checkbox" id="premium-switch">
           <span class="slider round neumorphic-in premium-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="notify-card neumorphic-out" id="notify-card">
+      <div class="notify-header">
+        <span class="notify-icon">🔔</span>
+        <div class="notify-info">
+          <h2>Threat Alerts</h2>
+          <p id="notify-subtext">Get notified when threats are blocked</p>
+        </div>
+      </div>
+      <div class="toggle-container">
+        <label class="switch">
+          <input type="checkbox" id="notify-switch">
+          <span class="slider round neumorphic-in notify-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="cookie-card neumorphic-out" id="cookie-card">
+      <div class="cookie-header">
+        <span class="cookie-icon">🍪</span>
+        <div class="cookie-info">
+          <h2>Cookie Auto-Dismiss</h2>
+          <p id="cookie-subtext">Auto-reject cookie consent banners</p>
+        </div>
+      </div>
+      <div class="toggle-container">
+        <label class="switch">
+          <input type="checkbox" id="cookie-switch">
+          <span class="slider round neumorphic-in cookie-slider"></span>
         </label>
       </div>
     </div>

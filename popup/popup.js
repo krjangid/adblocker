@@ -5,15 +5,47 @@ document.addEventListener('DOMContentLoaded', () => {
   const premiumSwitch = document.getElementById('premium-switch');
   const proCard = document.getElementById('pro-card');
   const proSubtext = document.getElementById('pro-subtext');
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  const notifySwitch = document.getElementById('notify-switch');
+  const notifyCard = document.getElementById('notify-card');
+  const notifySubtext = document.getElementById('notify-subtext');
+  const cookieSwitch = document.getElementById('cookie-switch');
+  const cookieCard = document.getElementById('cookie-card');
+  const cookieSubtext = document.getElementById('cookie-subtext');
 
-  // Load initial state for both toggles
-  chrome.storage.local.get(['adblockEnabled', 'premiumEnabled'], (result) => {
+  // ---- Theme ----
+  chrome.storage.local.get(['theme'], (result) => {
+    const theme = result.theme || 'dark';
+    applyTheme(theme);
+  });
+
+  themeToggle.addEventListener('click', () => {
+    const current = document.body.getAttribute('data-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    chrome.storage.local.set({ theme: next });
+  });
+
+  function applyTheme(theme) {
+    document.body.setAttribute('data-theme', theme);
+    themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+  }
+
+  // ---- Load initial state ----
+  chrome.storage.local.get(['adblockEnabled', 'premiumEnabled', 'notifyEnabled', 'cookieDismissEnabled'], (result) => {
     const isEnabled = result.adblockEnabled !== false;
     const isPremium = result.premiumEnabled === true;
+    const isNotify = result.notifyEnabled === true;
+    const isCookie = result.cookieDismissEnabled === true;
     powerSwitch.checked = isEnabled;
     premiumSwitch.checked = isPremium;
+    notifySwitch.checked = isNotify;
+    cookieSwitch.checked = isCookie;
     updateUI(isEnabled);
     updatePremiumUI(isPremium);
+    updateNotifyUI(isNotify);
+    updateCookieUI(isCookie);
   });
 
   // Handle main toggle
@@ -28,6 +60,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const isPremium = e.target.checked;
     chrome.storage.local.set({ premiumEnabled: isPremium });
     updatePremiumUI(isPremium);
+  });
+
+  // Handle notification toggle
+  notifySwitch.addEventListener('change', (e) => {
+    const isNotify = e.target.checked;
+    chrome.storage.local.set({ notifyEnabled: isNotify });
+    updateNotifyUI(isNotify);
+  });
+
+  // Handle cookie toggle
+  cookieSwitch.addEventListener('change', (e) => {
+    const isCookie = e.target.checked;
+    chrome.storage.local.set({ cookieDismissEnabled: isCookie });
+    updateCookieUI(isCookie);
   });
 
   function updateUI(isEnabled) {
@@ -52,7 +98,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Analytics Dashboard
+  function updateNotifyUI(isNotify) {
+    if (isNotify) {
+      notifyCard.classList.add('active');
+      notifySubtext.textContent = '✅ Alerts enabled — you\'ll be notified';
+    } else {
+      notifyCard.classList.remove('active');
+      notifySubtext.textContent = 'Get notified when threats are blocked';
+    }
+  }
+
+  function updateCookieUI(isCookie) {
+    if (isCookie) {
+      cookieCard.classList.add('active');
+      cookieSubtext.textContent = '✅ Enabled — auto-rejecting cookie banners';
+    } else {
+      cookieCard.classList.remove('active');
+      cookieSubtext.textContent = 'Auto-reject cookie consent banners';
+    }
+  }
+
+  // ---- Analytics Dashboard ----
   const pageBlockedEl = document.getElementById('page-blocked');
   const totalBlockedEl = document.getElementById('total-blocked');
   const dataSavedEl = document.getElementById('data-saved');

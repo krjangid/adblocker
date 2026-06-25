@@ -1,9 +1,11 @@
 // Background script initialized
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.local.get(['adblockEnabled', 'premiumEnabled', 'totalAdsBlocked', 'totalDataSaved', 'liveFeed', 'topSites', 'typeBreakdown', 'dailyCounts'], (result) => {
+  chrome.storage.local.get(['adblockEnabled', 'premiumEnabled', 'notifyEnabled', 'totalAdsBlocked', 'totalDataSaved', 'liveFeed', 'topSites', 'typeBreakdown', 'dailyCounts'], (result) => {
     const updates = {};
     if (result.adblockEnabled === undefined) updates.adblockEnabled = true;
     if (result.premiumEnabled === undefined) updates.premiumEnabled = false;
+    if (result.notifyEnabled === undefined) updates.notifyEnabled = false;
+    if (result.cookieDismissEnabled === undefined) updates.cookieDismissEnabled = false;
     if (result.totalAdsBlocked === undefined) updates.totalAdsBlocked = 0;
     if (result.totalDataSaved === undefined) updates.totalDataSaved = 0;
     if (!result.liveFeed) updates.liveFeed = [];
@@ -32,8 +34,67 @@ function getDomain(url) {
   catch(e) { return url; }
 }
 
+// ---- Notification Alerts ----
+// Track which tabs have already shown a notification this page load
+// so we don't spam the user with repeated alerts
+const notifiedTabs = new Map();
+
+function showThreatNotification(category, domain, tabId) {
+  chrome.storage.local.get(['notifyEnabled'], (result) => {
+    if (!result.notifyEnabled) return;
+
+    // Only notify once per tab per page load for threats
+    const tabKey = `${tabId}-${category}`;
+    if (notifiedTabs.has(tabKey)) return;
+    notifiedTabs.set(tabKey, true);
+
+    const titles = {
+      malware: '🦠 Malware Blocked!',
+      tracker: '👁️ Tracker Stopped!'
+    };
+
+    const messages = {
+      malware: `Blockium blocked a malware request from ${domain}. Your device is protected.`,
+      tracker: `Blockium stopped a tracker from ${domain} trying to follow you.`
+    };
+
+    const title = titles[category] || '🛡️ Threat Blocked!';
+    const message = messages[category] || `Blockium blocked a threat from ${domain}.`;
+
+    chrome.notifications.create(`blockium-${Date.now()}`, {
+      type: 'basic',
+      iconUrl: 'icons/icon128.png',
+      title: title,
+      message: message,
+      priority: 1,
+      silent: false
+    });
+  });
+}
+
+// Clear notification tracking when a tab navigates to a new page
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.status === 'loading') {
+    // Clear all entries for this tab when the page starts loading
+    for (const key of notifiedTabs.keys()) {
+      if (key.startsWith(`${tabId}-`)) {
+        notifiedTabs.delete(key);
+      }
+    }
+  }
+});
+
+// Clear notification tracking when a tab is closed
+chrome.tabs.onRemoved.addListener((tabId) => {
+  for (const key of notifiedTabs.keys()) {
+    if (key.startsWith(`${tabId}-`)) {
+      notifiedTabs.delete(key);
+    }
+  }
+});
+
 // Process a list of matched rules and update storage
-function processMatchedRules(matchedRules) {
+function processMatchedRules(matchedRules, tabId) {
   if (!matchedRules || matchedRules.length === 0) return;
 
   chrome.storage.local.get(['totalAdsBlocked', 'totalDataSaved', 'liveFeed', 'topSites', 'typeBreakdown', 'dailyCounts'], (result) => {
@@ -70,6 +131,11 @@ function processMatchedRules(matchedRules) {
 
       // Daily counts
       daily[today] = (daily[today] || 0) + 1;
+
+      // Send notification for malware and tracker blocks
+      if (category === 'malware' || category === 'tracker') {
+        showThreatNotification(category, domain, tabId);
+      }
     });
 
     // Prune old daily data (keep 7 days)
@@ -87,7 +153,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
     chrome.declarativeNetRequest.getMatchedRules({ tabId }, (result) => {
       if (chrome.runtime.lastError) return; // tab may have closed
       if (result && result.rulesMatchedInfo) {
-        processMatchedRules(result.rulesMatchedInfo);
+        processMatchedRules(result.rulesMatchedInfo, tabId);
       }
     });
   }
@@ -96,7 +162,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 // SECONDARY: Also try onRuleMatchedDebug if available (some Chrome versions support it)
 if (chrome.declarativeNetRequest.onRuleMatchedDebug) {
   chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((info) => {
-    processMatchedRules([info]);
+    const tabId = info.request ? info.request.tabId : -1;
+    processMatchedRules([info], tabId);
   });
 }
 
